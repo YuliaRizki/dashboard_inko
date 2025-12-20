@@ -11,6 +11,7 @@ import {
   FileText,
   Loader2,
   MapPin,
+  Shield,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -43,7 +44,16 @@ const INDONESIA_REGIONS = {
     "Pandeglang",
     "Lebak",
   ],
-  // ... (Add others as needed)
+};
+
+// Brand Colors
+const colors = {
+  primary: "#1F8F4A",
+  accent: "#27B36A",
+  mint: "#7FFFC7",
+  deep: "#0B3D2E",
+  cyan: "#0891B2",
+  cyanLight: "#22D3EE",
 };
 
 export default function IdentityVerificationPage() {
@@ -63,7 +73,7 @@ export default function IdentityVerificationPage() {
   const [religion, setReligion] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [occupation, setOccupation] = useState("");
-  const [nationality, setNationality] = useState("WNI");
+  const [nationality, setNationality] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [address, setAddress] = useState("");
@@ -90,11 +100,9 @@ export default function IdentityVerificationPage() {
       console.log(`DEBUG: Raw ${type.toUpperCase()} Text:`, extractedText);
 
       if (type === "ktp") {
-        // NIK
         const nikMatch = extractedText.match(/\d{16}/);
         if (nikMatch) setIdNumber(nikMatch[0]);
 
-        // Name
         const nameMatch = extractedText.match(/Nama\s*[:\s]*([^\n]+)/i);
         if (nameMatch)
           setFullName(
@@ -104,7 +112,6 @@ export default function IdentityVerificationPage() {
               .toUpperCase()
           );
 
-        // Birth Info
         const birthMatch = extractedText.match(
           /(?:Lahir)\s*[:\s]*([^\n,]+)[,\s]+(\d{2}-\d{2}-\d{4})/i
         );
@@ -118,23 +125,20 @@ export default function IdentityVerificationPage() {
           setBirthDate(birthMatch[2]);
         }
 
-        // Address
         const addressMatch = extractedText.match(
           /Alamat\s*[:\s]*([\s\S]*?)(?=Agama|$)/i
         );
         if (addressMatch) {
           const cleanAddress = addressMatch[1]
             .replace(/\n/g, " ")
-            .replace(/RTIRW\s*[:\s]*/gi, "RT/RW ") // Fixes the RT/RW typo
-            .replace(/KELLDESA\s*[:\s—]*/gi, "KEL/DESA ") // Fixes the Kelurahan typo
+            .replace(/RTIRW\s*[:\s]*/gi, "RT/RW ")
+            .replace(/KELLDESA\s*[:\s—]*/gi, "KEL/DESA ")
             .replace(/\s+/g, " ")
             .trim()
             .toUpperCase();
-
           setAddress(cleanAddress);
         }
 
-        // Religion
         const religionMatch = extractedText.match(/Agama\s*[:\s]*([^\n]+)/i);
         if (religionMatch)
           setReligion(
@@ -144,7 +148,6 @@ export default function IdentityVerificationPage() {
               .toUpperCase()
           );
 
-        // Marital Status
         const maritalMatch = extractedText.match(
           /Perkawinan\s*[:\s]*([^\n,]+)/i
         );
@@ -157,7 +160,6 @@ export default function IdentityVerificationPage() {
               .toUpperCase()
           );
 
-        // Occupation
         const occupationMatch = extractedText.match(
           /Pekerjaan\s*[:\s]*([^\n]+)/i
         );
@@ -208,115 +210,237 @@ export default function IdentityVerificationPage() {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center relative bg-[#030405] overflow-hidden">
+    <div className="w-full h-screen flex items-center justify-center">
+      {/* �️ RICH LIGHT ATMOSPHERIC BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#1FBF8F]/10 rounded-full blur-[100px]"
+          transition={{ duration: 12, repeat: Infinity }}
+          className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full blur-[150px]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(127, 255, 199, 0.3) 0%, rgba(31, 143, 74, 0.12) 50%, transparent 70%)",
+          }}
+        />
+        <motion.div
+          animate={{ x: [0, -25, 0], y: [0, 35, 0] }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[130px]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(8, 145, 178, 0.2) 0%, transparent 60%)",
+          }}
         />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative w-full max-w-[1200px] h-[85vh] bg-[#0A0C10] border border-white/10 rounded-[30px] flex flex-col shadow-2xl overflow-hidden glass-panel-premium"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-[1200px] h-[85vh] glass-panel-premium flex flex-col overflow-hidden"
       >
-        <div className="p-8 pb-4 shrink-0 z-20 bg-[#0A0C10]/20 backdrop-blur-md">
+        {/* HEADER */}
+        <div
+          className="p-8 pb-4 shrink-0 z-20"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(31, 143, 74, 0.06) 0%, transparent 100%)",
+          }}
+        >
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">
-              Identity_Verification
-            </h2>
-            <div className="flex items-center gap-4 text-[10px] font-bold text-white/40 uppercase tracking-widest">
-              STEP 02/02{" "}
-              <div className="w-32 h-1 bg-white/10 rounded-full">
-                <div className="w-full h-full bg-[#1FBF8F]" />
+            <div className="flex items-center gap-4">
+              <div>
+                <h2
+                  className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(135deg, #34D399 0%, #047857 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    display: "inline-block",
+                    fontFamily: "var(--font-montserrat)",
+                  }}
+                >
+                  Data Anggota
+                </h2>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-[10px] font-bold text-[#7A9990] uppercase tracking-widest">
+              <span>STEP 02</span>
+              <div className="w-32 h-2 bg-[#E8F5F0] rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1, delay: 0.5 }}
+                  className="h-full rounded-full"
+                  style={{
+                    background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent}, ${colors.mint})`,
+                    boxShadow: "0 0 10px rgba(31, 143, 74, 0.4)",
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 pt-0 custom-scrollbar z-10">
-          <div className="grid grid-cols-2 gap-8 mb-8">
-            <div
+        {/* SCROLLABLE CONTENT */}
+        <div className="flex-1 overflow-y-auto p-8 pt-6 custom-scrollbar z-10">
+          {/* UPLOAD ZONES */}
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            {/* KTP Upload */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => ktpInputRef.current?.click()}
-              className="h-48 rounded-2xl border-2 border-dashed border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-[#1FBF8F] cursor-pointer group relative overflow-hidden transition-all"
+              className="h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
+              style={{
+                background: ktpPreview
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "linear-gradient(145deg, rgba(31, 143, 74, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)",
+                border: ktpPreview
+                  ? `2px solid ${colors.primary}`
+                  : `2px dashed rgba(31, 143, 74, 0.25)`,
+                boxShadow: ktpPreview
+                  ? `0 0 30px rgba(31, 143, 74, 0.15), inset 0 0 20px rgba(31, 143, 74, 0.05)`
+                  : "0 10px 30px -10px rgba(11, 61, 46, 0.1)",
+              }}
             >
               {ktpPreview ? (
                 <>
                   <img
                     src={ktpPreview}
                     alt="KTP Preview"
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity"
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                   <div className="relative z-10 flex flex-col items-center">
                     {isScanningKTP ? (
-                      <Loader2 className="animate-spin text-[#1FBF8F]" />
+                      <Loader2
+                        className="animate-spin"
+                        style={{ color: colors.primary }}
+                        size={36}
+                      />
                     ) : (
-                      <CheckCircle2 className="text-[#1FBF8F]" />
+                      <CheckCircle2
+                        style={{ color: colors.primary }}
+                        size={36}
+                      />
                     )}
-                    <p className="mt-2 text-[10px] font-bold text-white drop-shadow-md">
-                      KTP UPLOADED
+                    <p
+                      className="mt-3 text-xs font-bold uppercase tracking-widest"
+                      style={{ color: colors.deep }}
+                    >
+                      KTP Uploaded
                     </p>
                   </div>
                 </>
               ) : (
                 <>
                   {isScanningKTP ? (
-                    <Loader2 className="animate-spin text-[#1FBF8F]" />
+                    <Loader2
+                      className="animate-spin"
+                      style={{ color: colors.primary }}
+                      size={40}
+                    />
                   ) : (
-                    <ScanFace className="text-white/40 group-hover:text-[#1FBF8F]" />
+                    <ScanFace
+                      className="transition-colors"
+                      style={{ color: "#7A9990" }}
+                      size={44}
+                    />
                   )}
-                  <p className="mt-2 text-[10px] font-bold text-white/40">
-                    UPLOAD KTP
+                  <p className="mt-3 text-xs font-bold text-[#7A9990] uppercase tracking-widest">
+                    Upload KTP
+                  </p>
+                  <p className="text-[10px] text-[#B8CCC4] mt-1">
+                    Klik Untuk Scan KTP
                   </p>
                 </>
               )}
-            </div>
+            </motion.div>
 
-            <div
+            {/* NPWP Upload */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => npwpInputRef.current?.click()}
-              className="h-48 rounded-2xl border-2 border-dashed border-white/10 bg-white/5 flex flex-col items-center justify-center hover:border-[#00C2FF] cursor-pointer group relative overflow-hidden transition-all"
+              className="h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
+              style={{
+                background: npwpPreview
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "linear-gradient(145deg, rgba(8, 145, 178, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)",
+                border: npwpPreview
+                  ? `2px solid ${colors.cyan}`
+                  : `2px dashed rgba(8, 145, 178, 0.25)`,
+                boxShadow: npwpPreview
+                  ? `0 0 30px rgba(8, 145, 178, 0.15), inset 0 0 20px rgba(8, 145, 178, 0.05)`
+                  : "0 10px 30px -10px rgba(8, 145, 178, 0.1)",
+              }}
             >
               {npwpPreview ? (
                 <>
                   <img
                     src={npwpPreview}
                     alt="NPWP Preview"
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity"
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                   <div className="relative z-10 flex flex-col items-center">
                     {isScanningNPWP ? (
-                      <Loader2 className="animate-spin text-[#00C2FF]" />
+                      <Loader2
+                        className="animate-spin"
+                        style={{ color: colors.cyan }}
+                        size={36}
+                      />
                     ) : (
-                      <CheckCircle2 className="text-[#00C2FF]" />
+                      <CheckCircle2 style={{ color: colors.cyan }} size={36} />
                     )}
-                    <p className="mt-2 text-[10px] font-bold text-white drop-shadow-md">
-                      NPWP UPLOADED
+                    <p
+                      className="mt-3 text-xs font-bold uppercase tracking-widest"
+                      style={{ color: colors.deep }}
+                    >
+                      NPWP Uploaded
                     </p>
                   </div>
                 </>
               ) : (
                 <>
                   {isScanningNPWP ? (
-                    <Loader2 className="animate-spin text-[#00C2FF]" />
+                    <Loader2
+                      className="animate-spin"
+                      style={{ color: colors.cyan }}
+                      size={40}
+                    />
                   ) : (
-                    <FileText className="text-white/40 group-hover:text-[#00C2FF]" />
+                    <FileText
+                      className="transition-colors"
+                      style={{ color: "#7A9990" }}
+                      size={44}
+                    />
                   )}
-                  <p className="mt-2 text-[10px] font-bold text-white/40">
-                    UPLOAD NPWP
+                  <p className="mt-3 text-xs font-bold text-[#7A9990] uppercase tracking-widest">
+                    Upload NPWP
+                  </p>
+                  <p className="text-[10px] text-[#B8CCC4] mt-1">
+                    Klik Untuk Scan NPWP
                   </p>
                 </>
               )}
-            </div>
+            </motion.div>
           </div>
 
+          {/* FORM FIELDS */}
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-4">
-              <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                Protocol Identity
+              <label
+                className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+                style={{ color: colors.primary }}
+              >
+                <div
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: colors.primary }}
+                />
+                Identitas Anggota
               </label>
               <input
                 type="text"
@@ -335,14 +459,14 @@ export default function IdentityVerificationPage() {
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="text"
-                  placeholder="POB"
+                  placeholder="TEMPAT LAHIR"
                   value={birthPlace}
                   onChange={(e) => setBirthPlace(e.target.value)}
                   className="input-premium w-full uppercase"
                 />
                 <input
                   type="text"
-                  placeholder="DOB"
+                  placeholder="TANGGAL LAHIR"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
                   className="input-premium w-full"
@@ -350,7 +474,7 @@ export default function IdentityVerificationPage() {
               </div>
               <input
                 type="text"
-                placeholder="NPWP NUMBER"
+                placeholder="NOMOR NPWP"
                 value={taxId}
                 onChange={(e) => setTaxId(e.target.value)}
                 className="input-premium w-full font-mono"
@@ -358,20 +482,26 @@ export default function IdentityVerificationPage() {
             </div>
 
             <div className="space-y-4">
-              <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                Social & Professional
+              <label
+                className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+                style={{ color: colors.cyan }}
+              >
+                <div
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: colors.cyan }}
+                />
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="text"
-                  placeholder="RELIGION"
+                  placeholder="AGAMA"
                   value={religion}
                   onChange={(e) => setReligion(e.target.value)}
                   className="input-premium w-full uppercase"
                 />
                 <input
                   type="text"
-                  placeholder="NATIONALITY"
+                  placeholder="KEWARGANEGARAAN"
                   value={nationality}
                   onChange={(e) => setNationality(e.target.value)}
                   className="input-premium w-full uppercase"
@@ -379,14 +509,14 @@ export default function IdentityVerificationPage() {
               </div>
               <input
                 type="text"
-                placeholder="MARITAL STATUS"
+                placeholder="STATUS PERNIKAHAN"
                 value={maritalStatus}
                 onChange={(e) => setMaritalStatus(e.target.value)}
                 className="input-premium w-full uppercase"
               />
               <input
                 type="text"
-                placeholder="OCCUPATION"
+                placeholder="PEKERJAAN"
                 value={occupation}
                 onChange={(e) => setOccupation(e.target.value)}
                 className="input-premium w-full uppercase"
@@ -394,21 +524,30 @@ export default function IdentityVerificationPage() {
             </div>
           </div>
 
+          {/* RESIDENCY SECTION */}
           <div className="mt-8 space-y-4 pb-8">
-            <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-              Residency Protocol
+            <label
+              className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+              style={{ color: colors.accent }}
+            >
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: colors.accent }}
+              />
+              Alamat
             </label>
             <div className="grid grid-cols-2 gap-4">
               <select
                 value={selectedProvince}
                 onChange={(e) => setSelectedProvince(e.target.value)}
-                className="input-premium w-full text-xs font-bold bg-transparent text-white/80"
+                className="input-premium w-full text-xs font-bold"
+                style={{ background: "rgba(255, 255, 255, 0.9)" }}
               >
                 <option value="" disabled>
-                  SELECT PROVINCE
+                  Provinsi
                 </option>
                 {Object.keys(INDONESIA_REGIONS).map((prov) => (
-                  <option key={prov} value={prov} className="bg-[#0A0C10]">
+                  <option key={prov} value={prov}>
                     {prov.toUpperCase()}
                   </option>
                 ))}
@@ -417,13 +556,14 @@ export default function IdentityVerificationPage() {
                 value={selectedCity}
                 disabled={!selectedProvince}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="input-premium w-full text-xs font-bold bg-transparent text-white/80"
+                className="input-premium w-full text-xs font-bold"
+                style={{ background: "rgba(255, 255, 255, 0.9)" }}
               >
                 <option value="" disabled>
-                  SELECT CITY
+                  Kota
                 </option>
                 {availableCities.map((city) => (
-                  <option key={city} value={city} className="bg-[#0A0C10]">
+                  <option key={city} value={city}>
                     {city.toUpperCase()}
                   </option>
                 ))}
@@ -432,10 +572,11 @@ export default function IdentityVerificationPage() {
             <div className="relative">
               <MapPin
                 size={14}
-                className="absolute left-4 top-4 text-white/20"
+                className="absolute left-4 top-4"
+                style={{ color: "#7A9990" }}
               />
               <textarea
-                placeholder="FULL RESIDENTIAL ADDRESS"
+                placeholder="Alamat Lengkap"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="input-premium w-full h-24 pt-3 pl-10 uppercase resize-none"
@@ -444,19 +585,27 @@ export default function IdentityVerificationPage() {
           </div>
         </div>
 
-        <div className="p-8 pt-6 border-t border-white/5 shrink-0 bg-[#0A0C10]/20 backdrop-blur-md z-20">
+        {/* FOOTER */}
+        <div
+          className="p-8 pt-6 shrink-0 z-20"
+          style={{
+            border: "none",
+            borderTop: "none",
+            background: "transparent",
+          }}
+        >
           <div className="flex justify-between items-center">
             <button
-              onClick={() => router.push("/register")}
-              className="text-white/40 text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-white"
+              onClick={() => router.push("/login")}
+              className="text-[#7A9990] text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-[#3D5A50] transition-colors"
             >
               <ChevronLeft size={14} /> Back
             </button>
             <button
               onClick={handleFinalize}
-              className="btn-primary w-64 flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]"
+              className="btn-primary w-64 flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]"
             >
-              FINALISE DATA <ChevronRight size={14} />
+              Finalisasi Data <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -481,24 +630,54 @@ export default function IdentityVerificationPage() {
         />
       </motion.div>
 
+      {/* SUCCESS OVERLAY */}
       <AnimatePresence>
         {isFinalized && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#030405]/95 backdrop-blur-xl text-center space-y-6"
+            className="absolute inset-0 z-50 flex flex-col items-center justify-center text-center space-y-6"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(127, 255, 199, 0.15) 0%, rgba(255, 255, 255, 0.98) 60%)",
+              backdropFilter: "blur(20px)",
+            }}
           >
-            <div className="w-24 h-24 bg-[#1FBF8F]/10 rounded-full flex items-center justify-center border-2 border-[#1FBF8F] shadow-[0_0_40px_rgba(31,191,143,0.3)]">
-              <CheckCircle2 size={48} className="text-[#1FBF8F]" />
-            </div>
-            <h2 className="text-4xl font-black italic text-white uppercase tracking-tighter">
-              Identity_Secured
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              className="w-28 h-28 rounded-full flex items-center justify-center"
+              style={{
+                background: `linear-gradient(145deg, rgba(31, 143, 74, 0.15), rgba(127, 255, 199, 0.2))`,
+                border: `3px solid ${colors.primary}`,
+                boxShadow: `0 0 60px rgba(31, 143, 74, 0.3)`,
+              }}
+            >
+              <CheckCircle2 size={56} style={{ color: colors.primary }} />
+            </motion.div>
+            <h2
+              className="text-5xl font-black uppercase tracking-tighter pr-4 py-2 bg-clip-text text-transparent"
+              style={{
+                backgroundImage: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                display: "inline-block",
+                fontFamily: "var(--font-montserrat)",
+              }}
+            >
+              DATA BERHASIL DIUNGGAH
             </h2>
+            <p className="text-[#3D5A50] text-sm max-w-md">
+              Data Anda saat ini dalam tahap verifikasi oleh admin. Selamat
+              datang di Inkowapi Network—pintu menuju kemandirian ekonomi
+              digital.
+            </p>
             <button
               onClick={() => (window.location.href = "/dashboard")}
-              className="btn-primary px-12 uppercase tracking-widest text-[10px]"
+              className="btn-primary px-12 uppercase tracking-widest text-[11px]"
             >
-              Enter Command Center
+              Masuk ke Dashboard Anggota
             </button>
           </motion.div>
         )}

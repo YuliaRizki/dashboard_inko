@@ -28,20 +28,38 @@ export default function DashboardPage() {
     <div className="p-8 space-y-8 min-h-screen">
       <header className="flex justify-between items-center mb-8 hidden md:flex">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">
+          <h1
+            className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #34D399 0%, #047857 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              display: "inline-block",
+              fontFamily: "var(--font-montserrat)",
+            }}
+          >
             Overview
           </h1>
           <p className="text-[var(--green-primary)] font-medium uppercase text-[10px] tracking-widest flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--green-primary)] animate-pulse" />
-            System Status: Operational
+            Ringkasan Aktivitas
           </p>
         </div>
-        <div className="flex gap-4">
-        </div>
+        <div className="flex gap-4"></div>
       </header>
 
       <div className="md:hidden mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">
+        <h1
+          className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
+          style={{
+            backgroundImage: "linear-gradient(135deg, #1F8F4A, #27B36A)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            display: "inline-block",
+            fontFamily: "var(--font-montserrat)",
+          }}
+        >
           Overview
         </h1>
         <p className="text-[var(--green-primary)] font-medium uppercase text-[10px] tracking-widest flex items-center gap-2">
@@ -59,7 +77,7 @@ export default function DashboardPage() {
         {[
           {
             title: "Total Revenue",
-            value: "$45,231.89",
+            value: "Rp 705.617.484",
             change: "+20.1%",
             icon: DollarSign,
           },
@@ -88,7 +106,7 @@ export default function DashboardPage() {
             className="p-6 glass-panel card-hover-effect group cursor-default"
           >
             <div className="flex justify-between items-start mb-4">
-              <div className="p-3 rounded-xl bg-[rgba(255,255,255,0.03)] text-[var(--text-secondary)] group-hover:text-[var(--green-primary)] transition-colors">
+              <div className="p-3 rounded-xl bg-[var(--ink-bg-fog)] text-[var(--text-secondary)] group-hover:text-[var(--green-primary)] transition-colors">
                 <stat.icon size={20} />
               </div>
               <span className="text-[10px] font-bold text-[var(--green-primary)] bg-[rgba(31,191,143,0.1)] px-2.5 py-1 rounded-full">
@@ -117,13 +135,13 @@ export default function DashboardPage() {
               <Activity className="text-[var(--green-primary)]" size={20} />
               Transaction Activity
             </h3>
-            <select className="bg-[rgba(255,255,255,0.03)] border border-[var(--glass-border)] text-[var(--text-secondary)] text-xs font-medium rounded-lg px-3 py-2 outline-none focus:border-[var(--accent-cyan)] transition-colors">
+            <select className="bg-[var(--ink-bg-fog)] border border-[var(--glass-border)] text-[var(--text-secondary)] text-xs font-medium rounded-lg px-3 py-2 outline-none focus:border-[var(--accent-cyan)] transition-colors">
               <option>Last 7 Days</option>
               <option>Last 30 Days</option>
               <option>Last 90 Days</option>
             </select>
           </div>
-          <div className="h-64 flex items-center justify-center bg-[rgba(0,0,0,0.2)] rounded-2xl border border-[var(--glass-border)] text-[var(--text-muted)] text-sm font-medium">
+          <div className="h-64 flex items-center justify-center bg-white/40 rounded-2xl border border-[var(--glass-border)] text-[var(--text-muted)] text-sm font-medium">
             Chart Visualization Area
           </div>
         </motion.div>
@@ -141,9 +159,9 @@ export default function DashboardPage() {
             {[1, 2, 3, 4].map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 group cursor-pointer p-2 rounded-xl hover:bg-[rgba(255,255,255,0.03)] transition-colors -mx-2"
+                className="flex items-center gap-4 group cursor-pointer p-2 rounded-xl hover:bg-[var(--ink-bg-fog)] transition-colors -mx-2"
               >
-                <div className="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.05)] flex items-center justify-center text-[var(--text-primary)] font-bold text-xs group-hover:bg-[rgba(31,191,143,0.1)] group-hover:text-[var(--green-primary)] transition-colors">
+                <div className="w-10 h-10 rounded-full bg-[var(--ink-bg-fog)] flex items-center justify-center text-[var(--text-primary)] font-bold text-xs group-hover:bg-[rgba(31,191,143,0.1)] group-hover:text-[var(--green-primary)] transition-colors">
                   JD
                 </div>
                 <div className="flex-1">
@@ -155,7 +173,7 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <p className="text-sm font-semibold text-[var(--text-primary)]">
-                  -$1,250.00
+                  -Rp 19.500.000
                 </p>
               </div>
             ))}

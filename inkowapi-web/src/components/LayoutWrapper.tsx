@@ -23,7 +23,7 @@ export default function LayoutWrapper({
   return (
     <div className="flex h-screen w-full relative">
       <Sidebar />
-      <main className="flex-1 ml-72 h-full overflow-y-auto bg-[var(--bg-main)]">
+      <main className="flex-1 ml-80 mr-4 h-full overflow-y-auto">
         {children}
       </main>
     </div>

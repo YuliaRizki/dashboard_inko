@@ -27,19 +27,21 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-72 bg-[var(--bg-panel)] border-r border-[var(--glass-border)] p-8 flex flex-col z-50">
-      <div className="mb-12 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--green-primary)] to-[#0E3B2E] flex items-center justify-center shadow-lg shadow-[rgba(31,191,143,0.2)]">
-          <span className="text-white font-bold text-lg">I</span>
+    <aside className="fixed left-4 top-4 h-[calc(100vh-2rem)] w-72 glass-panel-premium rounded-[32px] p-4 flex flex-col z-50 shadow-2xl">
+      <div className="mb-6 flex flex-col items-center text-center">
+        <div className="w-full h-24 relative flex items-center justify-center">
+          <img
+            src="/images/side-bar.png"
+            alt="INKOWAPI"
+            className="h-full w-auto object-contain"
+          />
         </div>
-        <div>
-          <p className="text-[10px] text-[var(--text-muted)] tracking-wider uppercase">
-            Welcome back,
-          </p>
-          <h1 className="text-sm font-bold tracking-tight text-white uppercase truncate max-w-[150px]">
+        <p className="text-xs text-[var(--text-muted)] tracking-wide uppercase font-medium truncate w-full">
+          Welcome back,{" "}
+          <span className="text-[var(--text-primary)] font-bold">
             {session?.user?.name || "..."}
-          </h1>
-        </div>
+          </span>
+        </p>
       </div>
 
       <nav className="flex-1 space-y-2">
@@ -78,7 +80,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto pt-6 border-t border-[var(--glass-border)]">
+      <div className="mt-auto pt-6">
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 text-[var(--text-muted)] hover:text-[#EF4444] transition-colors group rounded-xl hover:bg-[rgba(239,68,68,0.05)]"
