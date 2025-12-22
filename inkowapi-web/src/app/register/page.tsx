@@ -170,26 +170,37 @@ export default function IdentityVerificationPage() {
           else setMaritalStatus(cleanOCRText(mText))
         }
 
-        const addressBlock = extractedText.match(
-          /Alamat\s*[:\s]*([\s\S]*?)(?=Agama|Perkawinan|Kewarganegaraan)/i,
-        )
-        if (addressBlock) {
-          let addr = addressBlock[1]
-          addr = addr
-            .replace(/RT\/RW|RT\s*RW|RTRW/gi, ' RT/RW ')
-            .replace(/Kel\/Desa|Kel\s*Desa|KelDesa/gi, ' KEL/DESA ')
-            .replace(/Kecamatan/gi, ' KECAMATAN ')
+        // 6. Address - REWRITTEN to be robust
+        // Capture everything after "Alamat" until we hit "RT/RW", "Kell/Desa", or "Kecamatan" to start,
+        // then append those specific fields.
+        let fullAddr = ''
+        const alamatStart = extractedText.match(/Alamat[\s:.-]*([^\n]+)/i)
+        if (alamatStart) fullAddr += alamatStart[1] + ' '
+
+        const rtrw = extractedText.match(/(?:RT\/RW|RTRW)[\s:.-]*([^\n]+)/i)
+        if (rtrw) fullAddr += 'RT/RW ' + rtrw[1] + ' '
+
+        const kel = extractedText.match(/(?:Kel|Desa)[\s:.-]*([^\n]+)/i)
+        if (kel) fullAddr += 'KEL. ' + kel[1] + ' '
+
+        const kec = extractedText.match(/Kecamatan[\s:.-]*([^\n]+)/i)
+        if (kec) fullAddr += 'KEC. ' + kec[1]
+
+        if (fullAddr) {
+          let clean = fullAddr
             .replace(/\n/g, ' ')
             .replace(/[^a-zA-Z0-9\s/.,-]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
             .toUpperCase()
-          setAddress(addr)
+          setAddress(clean)
         }
 
-        const jobRaw = extractedText.match(/Pekerjaan\s*[:\s]*([^\n]+)/i)
+        // 7. Occupation
+        const jobRaw = extractedText.match(/Pekerjaan[\s:.-]*([^\n]+)/i)
         if (jobRaw) setOccupation(cleanOCRText(jobRaw[1]).toUpperCase())
 
+        // 8. Nationality
         if (extractedText.match(/WNI|INDONESIA/i)) setNationality('WNI')
         else if (extractedText.match(/WNA|ASING/i)) setNationality('WNA')
       } else if (type === 'npwp') {
