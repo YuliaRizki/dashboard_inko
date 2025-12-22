@@ -13,6 +13,18 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   user: {
     modelName: 'users',
+    additionalFields: {
+      nik: { type: 'string', required: false },
+      fullName: { type: 'string', required: false },
+      pob: { type: 'string', required: false },
+      dob: { type: 'string', required: false },
+      taxId: { type: 'string', required: false },
+      religion: { type: 'string', required: false },
+      nationality: { type: 'string', required: false },
+      maritalStatus: { type: 'string', required: false },
+      occupation: { type: 'string', required: false },
+      address: { type: 'string', required: false },
+    },
   },
   session: {
     modelName: 'sessions',
