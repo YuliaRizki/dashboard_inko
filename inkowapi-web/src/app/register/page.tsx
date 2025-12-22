@@ -217,7 +217,15 @@ export default function IdentityVerificationPage() {
 
         // 7. Occupation
         const jobRaw = extractedText.match(/Pekerjaan[\s:.-]*([^\n]+)/i)
-        if (jobRaw) setOccupation(cleanOCRText(jobRaw[1]).toUpperCase())
+        if (jobRaw) {
+          let j = jobRaw[1].toUpperCase()
+          // Stop at known Next Field labels or City Names if they bleed in
+          j = j.split(/Kewarganegaraan|JAKARTA|KOTA|KABUPATEN/i)[0]
+          // Stop if we see a clear visual gap (double space)
+          j = j.split(/\s{2,}/)[0]
+
+          setOccupation(cleanOCRText(j))
+        }
 
         // 8. Nationality
         if (extractedText.match(/WNI|INDONESIA/i)) setNationality('WNI')
