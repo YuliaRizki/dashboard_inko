@@ -60,6 +60,6 @@ export async function saveIdentityProtocol(data: any) {
     return { success: true }
   } catch (error: any) {
     console.error('POSTGRES ERROR:', error.message)
-    return { success: false, error: 'Database rejected protocol update.' }
+    return { success: false, error: `Database rejected protocol update: ${error.message}` }
   }
 }
