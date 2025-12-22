@@ -1,8 +1,8 @@
-"use client";
-import React, { useState, useRef, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { createWorker } from "tesseract.js";
-import { saveIdentityProtocol } from "../actions/saveIdentity";
+'use client'
+import React, { useState, useRef, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { createWorker } from 'tesseract.js'
+import { saveIdentityProtocol } from '../actions/saveIdentity'
 import {
   ScanFace,
   ChevronRight,
@@ -12,180 +12,164 @@ import {
   Loader2,
   MapPin,
   Shield,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 const INDONESIA_REGIONS = {
-  "DKI Jakarta": [
-    "Jakarta Pusat",
-    "Jakarta Barat",
-    "Jakarta Timur",
-    "Jakarta Selatan",
-    "Jakarta Utara",
-    "Kepulauan Seribu",
+  'DKI Jakarta': [
+    'Jakarta Pusat',
+    'Jakarta Barat',
+    'Jakarta Timur',
+    'Jakarta Selatan',
+    'Jakarta Utara',
+    'Kepulauan Seribu',
   ],
-  "Jawa Barat": [
-    "Bandung",
-    "Bekasi",
-    "Depok",
-    "Bogor",
-    "Cimahi",
-    "Tasikmalaya",
-    "Sukabumi",
-    "Cirebon",
-    "Garut",
-    "Sumedang",
+  'Jawa Barat': [
+    'Bandung',
+    'Bekasi',
+    'Depok',
+    'Bogor',
+    'Cimahi',
+    'Tasikmalaya',
+    'Sukabumi',
+    'Cirebon',
+    'Garut',
+    'Sumedang',
   ],
-  Banten: [
-    "Tangerang",
-    "Tangerang Selatan",
-    "Serang",
-    "Cilegon",
-    "Pandeglang",
-    "Lebak",
-  ],
-};
+  Banten: ['Tangerang', 'Tangerang Selatan', 'Serang', 'Cilegon', 'Pandeglang', 'Lebak'],
+}
 
 // Brand Colors
 // Brand Colors - Refactored to use CSS Variables
 const colors = {
-  primary: "var(--ink-green-primary)",
-  accent: "var(--ink-green-accent)",
-  mint: "var(--ink-green-mint)",
-  deep: "var(--ink-green-deep)",
-  cyan: "var(--ink-register-accent)",
-  cyanLight: "var(--ink-accent-light-register)",
-};
+  primary: 'var(--ink-green-primary)',
+  accent: 'var(--ink-green-accent)',
+  mint: 'var(--ink-green-mint)',
+  deep: 'var(--ink-green-deep)',
+  cyan: 'var(--ink-register-accent)',
+  cyanLight: 'var(--ink-accent-light-register)',
+}
 
 export default function IdentityVerificationPage() {
-  const router = useRouter();
-  const ktpInputRef = useRef<HTMLInputElement>(null);
-  const npwpInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter()
+  const ktpInputRef = useRef<HTMLInputElement>(null)
+  const npwpInputRef = useRef<HTMLInputElement>(null)
 
-  const [isScanningKTP, setIsScanningKTP] = useState(false);
-  const [isScanningNPWP, setIsScanningNPWP] = useState(false);
-  const [ktpPreview, setKtpPreview] = useState<string | null>(null);
-  const [npwpPreview, setNpwpPreview] = useState<string | null>(null);
-  const [fullName, setFullName] = useState("");
-  const [taxId, setTaxId] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [birthPlace, setBirthPlace] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [religion, setReligion] = useState("");
-  const [maritalStatus, setMaritalStatus] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [nationality, setNationality] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [address, setAddress] = useState("");
-  const [isFinalized, setIsFinalized] = useState(false);
+  const [isScanningKTP, setIsScanningKTP] = useState(false)
+  const [isScanningNPWP, setIsScanningNPWP] = useState(false)
+  const [ktpPreview, setKtpPreview] = useState<string | null>(null)
+  const [npwpPreview, setNpwpPreview] = useState<string | null>(null)
+  const [fullName, setFullName] = useState('')
+  const [taxId, setTaxId] = useState('')
+  const [idNumber, setIdNumber] = useState('')
+  const [birthPlace, setBirthPlace] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [religion, setReligion] = useState('')
+  const [maritalStatus, setMaritalStatus] = useState('')
+  const [occupation, setOccupation] = useState('')
+  const [nationality, setNationality] = useState('')
+  const [selectedProvince, setSelectedProvince] = useState('')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [address, setAddress] = useState('')
+  const [isFinalized, setIsFinalized] = useState(false)
 
   const availableCities = useMemo(() => {
     return selectedProvince
       ? INDONESIA_REGIONS[selectedProvince as keyof typeof INDONESIA_REGIONS]
-      : [];
-  }, [selectedProvince]);
+      : []
+  }, [selectedProvince])
 
-  const handleScan = async (file: File, type: "ktp" | "npwp") => {
-    const setIsScanning = type === "ktp" ? setIsScanningKTP : setIsScanningNPWP;
-    const setPreview = type === "ktp" ? setKtpPreview : setNpwpPreview;
-    const objectUrl = URL.createObjectURL(file);
-    setPreview(objectUrl);
-    setIsScanning(true);
+  const handleScan = async (file: File, type: 'ktp' | 'npwp') => {
+    const setIsScanning = type === 'ktp' ? setIsScanningKTP : setIsScanningNPWP
+    const setPreview = type === 'ktp' ? setKtpPreview : setNpwpPreview
+    const objectUrl = URL.createObjectURL(file)
+    setPreview(objectUrl)
+    setIsScanning(true)
 
     try {
-      const worker = await createWorker("ind");
-      const result = await worker.recognize(file);
-      const extractedText = result.data.text;
+      const worker = await createWorker('ind')
+      const result = await worker.recognize(file)
+      const extractedText = result.data.text
 
-      console.log(`DEBUG: Raw ${type.toUpperCase()} Text:`, extractedText);
+      console.log(`DEBUG: Raw ${type.toUpperCase()} Text:`, extractedText)
 
-      if (type === "ktp") {
-        const nikMatch = extractedText.match(/\d{16}/);
-        if (nikMatch) setIdNumber(nikMatch[0]);
+      if (type === 'ktp') {
+        const nikMatch = extractedText.match(/\d{16}/)
+        if (nikMatch) setIdNumber(nikMatch[0])
 
-        const nameMatch = extractedText.match(/Nama\s*[:\s]*([^\n]+)/i);
+        const nameMatch = extractedText.match(/Nama\s*[:\s]*([^\n]+)/i)
         if (nameMatch)
           setFullName(
             nameMatch[1]
-              .replace(/[^a-zA-Z\s]/g, "")
+              .replace(/[^a-zA-Z\s]/g, '')
               .trim()
-              .toUpperCase()
-          );
+              .toUpperCase(),
+          )
 
         const birthMatch = extractedText.match(
-          /(?:Lahir)\s*[:\s]*([^\n,]+)[,\s]+(\d{2}-\d{2}-\d{4})/i
-        );
+          /(?:Lahir)\s*[:\s]*([^\n,]+)[,\s]+(\d{2}-\d{2}-\d{4})/i,
+        )
         if (birthMatch) {
           setBirthPlace(
             birthMatch[1]
-              .replace(/[^a-zA-Z\s]/g, "")
+              .replace(/[^a-zA-Z\s]/g, '')
               .trim()
-              .toUpperCase()
-          );
-          setBirthDate(birthMatch[2]);
+              .toUpperCase(),
+          )
+          setBirthDate(birthMatch[2])
         }
 
-        const addressMatch = extractedText.match(
-          /Alamat\s*[:\s]*([\s\S]*?)(?=Agama|$)/i
-        );
+        const addressMatch = extractedText.match(/Alamat\s*[:\s]*([\s\S]*?)(?=Agama|$)/i)
         if (addressMatch) {
           const cleanAddress = addressMatch[1]
-            .replace(/\n/g, " ")
-            .replace(/RTIRW\s*[:\s]*/gi, "RT/RW ")
-            .replace(/KELLDESA\s*[:\s—]*/gi, "KEL/DESA ")
-            .replace(/\s+/g, " ")
+            .replace(/\n/g, ' ')
+            .replace(/RTIRW\s*[:\s]*/gi, 'RT/RW ')
+            .replace(/KELLDESA\s*[:\s—]*/gi, 'KEL/DESA ')
+            .replace(/\s+/g, ' ')
             .trim()
-            .toUpperCase();
-          setAddress(cleanAddress);
+            .toUpperCase()
+          setAddress(cleanAddress)
         }
 
-        const religionMatch = extractedText.match(/Agama\s*[:\s]*([^\n]+)/i);
+        const religionMatch = extractedText.match(/Agama\s*[:\s]*([^\n]+)/i)
         if (religionMatch)
           setReligion(
             religionMatch[1]
-              .replace(/[^a-zA-Z]/g, "")
+              .replace(/[^a-zA-Z]/g, '')
               .trim()
-              .toUpperCase()
-          );
+              .toUpperCase(),
+          )
 
-        const maritalMatch = extractedText.match(
-          /Perkawinan\s*[:\s]*([^\n,]+)/i
-        );
+        const maritalMatch = extractedText.match(/Perkawinan\s*[:\s]*([^\n,]+)/i)
         if (maritalMatch)
           setMaritalStatus(
             maritalMatch[1]
-              .replace(/\b[LP]\b.*$/i, "")
-              .replace(/[^a-zA-Z\s]/g, "")
+              .replace(/\b[LP]\b.*$/i, '')
+              .replace(/[^a-zA-Z\s]/g, '')
               .trim()
-              .toUpperCase()
-          );
+              .toUpperCase(),
+          )
 
-        const occupationMatch = extractedText.match(
-          /Pekerjaan\s*[:\s]*([^\n]+)/i
-        );
-        if (occupationMatch)
-          setOccupation(occupationMatch[1].trim().toUpperCase());
+        const occupationMatch = extractedText.match(/Pekerjaan\s*[:\s]*([^\n]+)/i)
+        if (occupationMatch) setOccupation(occupationMatch[1].trim().toUpperCase())
 
-        if (extractedText.toUpperCase().includes("WNI")) setNationality("WNI");
+        if (extractedText.toUpperCase().includes('WNI')) setNationality('WNI')
       } else {
-        const npwpMatch = extractedText.match(
-          /\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}/
-        );
-        if (npwpMatch) setTaxId(npwpMatch[0]);
+        const npwpMatch = extractedText.match(/\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}/)
+        if (npwpMatch) setTaxId(npwpMatch[0])
       }
-      await worker.terminate();
+      await worker.terminate()
     } catch (err) {
-      console.error("OCR Error:", err);
+      console.error('OCR Error:', err)
     } finally {
-      setIsScanning(false);
+      setIsScanning(false)
     }
-  };
+  }
 
   const handleFinalize = async () => {
     if (!idNumber || !fullName) {
-      alert("PROTOCOL INCOMPLETE: Please ensure NIK and Name are scanned.");
-      return;
+      alert('PROTOCOL INCOMPLETE: Please ensure NIK and Name are scanned.')
+      return
     }
 
     const protocolData = {
@@ -199,16 +183,16 @@ export default function IdentityVerificationPage() {
       maritalStatus,
       occupation,
       address,
-    };
+    }
 
-    const result = await saveIdentityProtocol(protocolData);
+    const result = await saveIdentityProtocol(protocolData)
 
     if (result.success) {
-      setIsFinalized(true);
+      setIsFinalized(true)
     } else {
-      alert(`SECURITY BREACH: ${result.error}`);
+      alert(`SECURITY BREACH: ${result.error}`)
     }
-  };
+  }
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
@@ -220,7 +204,7 @@ export default function IdentityVerificationPage() {
           className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full blur-[150px]"
           style={{
             background:
-              "radial-gradient(circle, rgba(127, 255, 199, 0.3) 0%, rgba(31, 143, 74, 0.12) 50%, transparent 70%)",
+              'radial-gradient(circle, rgba(127, 255, 199, 0.3) 0%, rgba(31, 143, 74, 0.12) 50%, transparent 70%)',
           }}
         />
         <motion.div
@@ -228,8 +212,7 @@ export default function IdentityVerificationPage() {
           transition={{ duration: 15, repeat: Infinity }}
           className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[130px]"
           style={{
-            background:
-              "radial-gradient(circle, rgba(8, 145, 178, 0.2) 0%, transparent 60%)",
+            background: 'radial-gradient(circle, rgba(8, 145, 178, 0.2) 0%, transparent 60%)',
           }}
         />
       </div>
@@ -238,44 +221,43 @@ export default function IdentityVerificationPage() {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-[1200px] h-[85vh] glass-panel-premium flex flex-col overflow-hidden"
+        className="relative w-full max-w-[1200px] h-screen md:h-[85vh] glass-panel-premium flex flex-col overflow-hidden md:rounded-[32px]"
       >
         {/* HEADER */}
         <div
-          className="p-8 pb-4 shrink-0 z-20"
+          className="p-6 md:p-8 pb-4 shrink-0 z-20"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(31, 143, 74, 0.06) 0%, transparent 100%)",
+            background: 'linear-gradient(180deg, rgba(31, 143, 74, 0.06) 0%, transparent 100%)',
           }}
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-4">
             <div className="flex items-center gap-4">
               <div>
                 <h2
-                  className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
+                  className="text-2xl md:text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
                   style={{
-                    backgroundImage: "var(--ink-gradient-emerald)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                    display: "inline-block",
-                    fontFamily: "var(--font-montserrat)",
+                    backgroundImage: 'var(--ink-gradient-emerald)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    display: 'inline-block',
+                    fontFamily: 'var(--font-montserrat)',
                   }}
                 >
                   Data Anggota
                 </h2>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-[10px] font-bold text-[#7A9990] uppercase tracking-widest">
+            <div className="flex items-center gap-4 text-[10px] font-bold text-[#7A9990] uppercase tracking-widest self-end md:self-auto">
               <span>STEP 02</span>
               <div className="w-32 h-2 bg-[#E8F5F0] rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
+                  animate={{ width: '100%' }}
                   transition={{ duration: 1, delay: 0.5 }}
                   className="h-full rounded-full"
                   style={{
                     background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent}, ${colors.mint})`,
-                    boxShadow: "0 0 10px rgba(31, 143, 74, 0.4)",
+                    boxShadow: '0 0 10px rgba(31, 143, 74, 0.4)',
                   }}
                 />
               </div>
@@ -284,25 +266,25 @@ export default function IdentityVerificationPage() {
         </div>
 
         {/* SCROLLABLE CONTENT */}
-        <div className="flex-1 overflow-y-auto p-8 pt-6 custom-scrollbar z-10">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 pt-2 md:pt-6 custom-scrollbar z-10 pb-24 md:pb-8">
           {/* UPLOAD ZONES */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* KTP Upload */}
             <motion.div
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => ktpInputRef.current?.click()}
-              className="h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
+              className="h-40 md:h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
               style={{
                 background: ktpPreview
-                  ? "rgba(255, 255, 255, 0.5)"
-                  : "linear-gradient(145deg, rgba(31, 143, 74, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)",
+                  ? 'rgba(255, 255, 255, 0.5)'
+                  : 'linear-gradient(145deg, rgba(31, 143, 74, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)',
                 border: ktpPreview
                   ? `2px solid ${colors.primary}`
                   : `2px dashed rgba(31, 143, 74, 0.25)`,
                 boxShadow: ktpPreview
                   ? `0 0 30px rgba(31, 143, 74, 0.15), inset 0 0 20px rgba(31, 143, 74, 0.05)`
-                  : "0 10px 30px -10px rgba(11, 61, 46, 0.1)",
+                  : '0 10px 30px -10px rgba(11, 61, 46, 0.1)',
               }}
             >
               {ktpPreview ? (
@@ -321,10 +303,7 @@ export default function IdentityVerificationPage() {
                         size={36}
                       />
                     ) : (
-                      <CheckCircle2
-                        style={{ color: colors.primary }}
-                        size={36}
-                      />
+                      <CheckCircle2 style={{ color: colors.primary }} size={36} />
                     )}
                     <p
                       className="mt-3 text-xs font-bold uppercase tracking-widest"
@@ -337,24 +316,18 @@ export default function IdentityVerificationPage() {
               ) : (
                 <>
                   {isScanningKTP ? (
-                    <Loader2
-                      className="animate-spin"
-                      style={{ color: colors.primary }}
-                      size={40}
-                    />
+                    <Loader2 className="animate-spin" style={{ color: colors.primary }} size={40} />
                   ) : (
                     <ScanFace
                       className="transition-colors"
-                      style={{ color: "#7A9990" }}
+                      style={{ color: '#7A9990' }}
                       size={44}
                     />
                   )}
                   <p className="mt-3 text-xs font-bold text-[#7A9990] uppercase tracking-widest">
                     Upload KTP
                   </p>
-                  <p className="text-[10px] text-[#B8CCC4] mt-1">
-                    Klik Untuk Scan KTP
-                  </p>
+                  <p className="text-[10px] text-[#B8CCC4] mt-1">Klik Untuk Scan KTP</p>
                 </>
               )}
             </motion.div>
@@ -364,17 +337,17 @@ export default function IdentityVerificationPage() {
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => npwpInputRef.current?.click()}
-              className="h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
+              className="h-40 md:h-52 rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all"
               style={{
                 background: npwpPreview
-                  ? "rgba(255, 255, 255, 0.5)"
-                  : "linear-gradient(145deg, rgba(8, 145, 178, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)",
+                  ? 'rgba(255, 255, 255, 0.5)'
+                  : 'linear-gradient(145deg, rgba(8, 145, 178, 0.06) 0%, rgba(255, 255, 255, 0.8) 100%)',
                 border: npwpPreview
                   ? `2px solid ${colors.cyan}`
                   : `2px dashed rgba(8, 145, 178, 0.25)`,
                 boxShadow: npwpPreview
                   ? `0 0 30px rgba(8, 145, 178, 0.15), inset 0 0 20px rgba(8, 145, 178, 0.05)`
-                  : "0 10px 30px -10px rgba(8, 145, 178, 0.1)",
+                  : '0 10px 30px -10px rgba(8, 145, 178, 0.1)',
               }}
             >
               {npwpPreview ? (
@@ -387,11 +360,7 @@ export default function IdentityVerificationPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                   <div className="relative z-10 flex flex-col items-center">
                     {isScanningNPWP ? (
-                      <Loader2
-                        className="animate-spin"
-                        style={{ color: colors.cyan }}
-                        size={36}
-                      />
+                      <Loader2 className="animate-spin" style={{ color: colors.cyan }} size={36} />
                     ) : (
                       <CheckCircle2 style={{ color: colors.cyan }} size={36} />
                     )}
@@ -406,40 +375,31 @@ export default function IdentityVerificationPage() {
               ) : (
                 <>
                   {isScanningNPWP ? (
-                    <Loader2
-                      className="animate-spin"
-                      style={{ color: colors.cyan }}
-                      size={40}
-                    />
+                    <Loader2 className="animate-spin" style={{ color: colors.cyan }} size={40} />
                   ) : (
                     <FileText
                       className="transition-colors"
-                      style={{ color: "#7A9990" }}
+                      style={{ color: '#7A9990' }}
                       size={44}
                     />
                   )}
                   <p className="mt-3 text-xs font-bold text-[#7A9990] uppercase tracking-widest">
                     Upload NPWP
                   </p>
-                  <p className="text-[10px] text-[#B8CCC4] mt-1">
-                    Klik Untuk Scan NPWP
-                  </p>
+                  <p className="text-[10px] text-[#B8CCC4] mt-1">Klik Untuk Scan NPWP</p>
                 </>
               )}
             </motion.div>
           </div>
 
           {/* FORM FIELDS */}
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div className="space-y-4">
               <label
                 className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
                 style={{ color: colors.primary }}
               >
-                <div
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: colors.primary }}
-                />
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: colors.primary }} />
                 Identitas Anggota
               </label>
               <input
@@ -456,7 +416,7 @@ export default function IdentityVerificationPage() {
                 onChange={(e) => setIdNumber(e.target.value)}
                 className="input-premium w-full font-mono"
               />
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-2">
                 <input
                   type="text"
                   placeholder="TEMPAT LAHIR"
@@ -486,12 +446,9 @@ export default function IdentityVerificationPage() {
                 className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
                 style={{ color: colors.cyan }}
               >
-                <div
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: colors.cyan }}
-                />
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: colors.cyan }} />
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-2">
                 <input
                   type="text"
                   placeholder="AGAMA"
@@ -530,18 +487,15 @@ export default function IdentityVerificationPage() {
               className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
               style={{ color: colors.accent }}
             >
-              <div
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: colors.accent }}
-              />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: colors.accent }} />
               Alamat
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <select
                 value={selectedProvince}
                 onChange={(e) => setSelectedProvince(e.target.value)}
                 className="input-premium w-full text-xs font-bold"
-                style={{ background: "rgba(255, 255, 255, 0.9)" }}
+                style={{ background: 'rgba(255, 255, 255, 0.9)' }}
               >
                 <option value="" disabled>
                   Provinsi
@@ -557,7 +511,7 @@ export default function IdentityVerificationPage() {
                 disabled={!selectedProvince}
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="input-premium w-full text-xs font-bold"
-                style={{ background: "rgba(255, 255, 255, 0.9)" }}
+                style={{ background: 'rgba(255, 255, 255, 0.9)' }}
               >
                 <option value="" disabled>
                   Kota
@@ -570,11 +524,7 @@ export default function IdentityVerificationPage() {
               </select>
             </div>
             <div className="relative">
-              <MapPin
-                size={14}
-                className="absolute left-4 top-4"
-                style={{ color: "#7A9990" }}
-              />
+              <MapPin size={14} className="absolute left-4 top-4" style={{ color: '#7A9990' }} />
               <textarea
                 placeholder="Alamat Lengkap"
                 value={address}
@@ -587,23 +537,23 @@ export default function IdentityVerificationPage() {
 
         {/* FOOTER */}
         <div
-          className="p-8 pt-6 shrink-0 z-20"
+          className="p-6 md:p-8 pt-4 md:pt-6 shrink-0 z-20 absolute bottom-0 md:relative w-full bg-white/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none"
           style={{
-            border: "none",
-            borderTop: "none",
-            background: "transparent",
+            borderTop: '1px solid rgba(255, 255, 255, 0.5)',
+            background:
+              'linear-gradient(0deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8)) md:transparent',
           }}
         >
           <div className="flex justify-between items-center">
             <button
-              onClick={() => router.push("/login")}
+              onClick={() => router.push('/login')}
               className="text-[#7A9990] text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-[#3D5A50] transition-colors"
             >
               <ChevronLeft size={14} /> Back
             </button>
             <button
               onClick={handleFinalize}
-              className="btn-primary w-64 flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]"
+              className="btn-primary w-48 md:w-64 flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]"
             >
               Finalisasi Data <ChevronRight size={14} />
             </button>
@@ -615,18 +565,14 @@ export default function IdentityVerificationPage() {
           ref={ktpInputRef}
           className="hidden"
           accept="image/*"
-          onChange={(e) =>
-            e.target.files?.[0] && handleScan(e.target.files[0], "ktp")
-          }
+          onChange={(e) => e.target.files?.[0] && handleScan(e.target.files[0], 'ktp')}
         />
         <input
           type="file"
           ref={npwpInputRef}
           className="hidden"
           accept="image/*"
-          onChange={(e) =>
-            e.target.files?.[0] && handleScan(e.target.files[0], "npwp")
-          }
+          onChange={(e) => e.target.files?.[0] && handleScan(e.target.files[0], 'npwp')}
         />
       </motion.div>
 
@@ -639,14 +585,14 @@ export default function IdentityVerificationPage() {
             className="absolute inset-0 z-50 flex flex-col items-center justify-center text-center space-y-6"
             style={{
               background:
-                "radial-gradient(ellipse at center, rgba(127, 255, 199, 0.15) 0%, rgba(255, 255, 255, 0.98) 60%)",
-              backdropFilter: "blur(20px)",
+                'radial-gradient(ellipse at center, rgba(127, 255, 199, 0.15) 0%, rgba(255, 255, 255, 0.98) 60%)',
+              backdropFilter: 'blur(20px)',
             }}
           >
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               className="w-28 h-28 rounded-full flex items-center justify-center"
               style={{
                 background: `linear-gradient(145deg, rgba(31, 143, 74, 0.15), rgba(127, 255, 199, 0.2))`,
@@ -659,22 +605,21 @@ export default function IdentityVerificationPage() {
             <h2
               className="text-5xl font-black uppercase tracking-tighter pr-4 py-2 bg-clip-text text-transparent"
               style={{
-                backgroundImage: "var(--ink-gradient-primary)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                display: "inline-block",
-                fontFamily: "var(--font-montserrat)",
+                backgroundImage: 'var(--ink-gradient-primary)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                display: 'inline-block',
+                fontFamily: 'var(--font-montserrat)',
               }}
             >
               DATA BERHASIL DIUNGGAH
             </h2>
             <p className="text-[#3D5A50] text-sm max-w-md">
-              Data Anda saat ini dalam tahap verifikasi oleh admin. Selamat
-              datang di Inkowapi Network—pintu menuju kemandirian ekonomi
-              digital.
+              Data Anda saat ini dalam tahap verifikasi oleh admin. Selamat datang di Inkowapi
+              Network—pintu menuju kemandirian ekonomi digital.
             </p>
             <button
-              onClick={() => (window.location.href = "/dashboard")}
+              onClick={() => (window.location.href = '/dashboard')}
               className="btn-primary px-12 uppercase tracking-widest text-[11px]"
             >
               Masuk ke Dashboard Anggota
@@ -683,5 +628,5 @@ export default function IdentityVerificationPage() {
         )}
       </AnimatePresence>
     </div>
-  );
+  )
 }
