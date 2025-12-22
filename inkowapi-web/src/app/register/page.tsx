@@ -79,6 +79,35 @@ export default function IdentityVerificationPage() {
       : []
   }, [selectedProvince])
 
+  // --- HELPER FUNCTIONS FOR OCR IMPROVEMENT ---
+  const cleanOCRText = (text: string) => {
+    return text.replace(/[:|]/g, ' ').replace(/\s+/g, ' ').trim()
+  }
+
+  const cleanNIK = (text: string) => {
+    // Attempt to find 16 digits, tolerating common OCR errors (O->0, I->1, etc.)
+    const potentialNik = text.replace(/[^0-9OIl]/g, '')
+    const cleaned = potentialNik.replace(/[O]/g, '0').replace(/[Il]/g, '1')
+    const match = cleaned.match(/\d{16}/)
+    return match ? match[0] : ''
+  }
+
+  const matchFromList = (text: string, validList: string[]) => {
+    if (!text) return ''
+    const upper = text.toUpperCase().replace(/[^A-Z]/g, '')
+    for (const valid of validList) {
+      const validClean = valid.replace(/[^A-Z]/g, '')
+      if (upper.includes(validClean) || validClean.includes(upper)) {
+        return valid
+      }
+    }
+    if (upper.includes('SLAM')) return 'ISLAM'
+    if (upper.includes('RISTEN')) return 'KRISTEN'
+    if (upper.includes('ATOLIK')) return 'KATOLIK'
+    if (upper.includes('KAWIN')) return 'KAWIN'
+    return text.toUpperCase()
+  }
+
   const handleScan = async (file: File, type: 'ktp' | 'npwp') => {
     const setIsScanning = type === 'ktp' ? setIsScanningKTP : setIsScanningNPWP
     const setPreview = type === 'ktp' ? setKtpPreview : setNpwpPreview
@@ -90,77 +119,99 @@ export default function IdentityVerificationPage() {
       const worker = await createWorker('ind')
       const result = await worker.recognize(file)
       const extractedText = result.data.text
-
       console.log(`DEBUG: Raw ${type.toUpperCase()} Text:`, extractedText)
 
       if (type === 'ktp') {
-        const nikMatch = extractedText.match(/\d{16}/)
-        if (nikMatch) setIdNumber(nikMatch[0])
+        const nikRaw = extractedText.match(/(?:NIK|Nomor)[:\s]*([\s\S]{16,25})(?=\n|Nama)/i)
+        const nikCandidate = nikRaw ? nikRaw[1] : extractedText
+        const finalNik = cleanNIK(nikCandidate)
+        if (finalNik) setIdNumber(finalNik)
 
         const nameMatch = extractedText.match(/Nama\s*[:\s]*([^\n]+)/i)
-        if (nameMatch)
-          setFullName(
-            nameMatch[1]
-              .replace(/[^a-zA-Z\s]/g, '')
-              .trim()
-              .toUpperCase(),
-          )
-
-        const birthMatch = extractedText.match(
-          /(?:Lahir)\s*[:\s]*([^\n,]+)[,\s]+(\d{2}-\d{2}-\d{4})/i,
-        )
-        if (birthMatch) {
-          setBirthPlace(
-            birthMatch[1]
-              .replace(/[^a-zA-Z\s]/g, '')
-              .trim()
-              .toUpperCase(),
-          )
-          setBirthDate(birthMatch[2])
+        if (nameMatch) {
+          let n = nameMatch[1]
+            .replace(/[^a-zA-Z\s,.]/g, '')
+            .trim()
+            .toUpperCase()
+          setFullName(n)
         }
 
-        const addressMatch = extractedText.match(/Alamat\s*[:\s]*([\s\S]*?)(?=Agama|$)/i)
-        if (addressMatch) {
-          const cleanAddress = addressMatch[1]
+        const dateMatch = extractedText.match(/(\d{2}-\d{2}-\d{4})/)
+        if (dateMatch) setBirthDate(dateMatch[0])
+
+        const birthLine = extractedText.match(/Lahir\s*[:\s]*([^\n]+)/i)
+        if (birthLine) {
+          const parts = birthLine[1].split(/[.,]\s*\d/)
+          if (parts[0]) {
+            setBirthPlace(
+              parts[0]
+                .replace(/[^a-zA-Z\s]/g, '')
+                .trim()
+                .toUpperCase(),
+            )
+          }
+        }
+
+        const religionRaw = extractedText.match(/Agama\s*[:\s]*([^\n]+)/i)
+        if (religionRaw) {
+          const relText = religionRaw[1]
+          const validReligions = ['ISLAM', 'KRISTEN', 'KATOLIK', 'HINDU', 'BUDDHA', 'KONGHUCU']
+          const matchedRel = matchFromList(relText, validReligions)
+          setReligion(matchedRel)
+        }
+
+        const maritalRaw = extractedText.match(/Perkawinan\s*[:\s]*([^\n]+)/i)
+        if (maritalRaw) {
+          const mText = maritalRaw[1].toUpperCase()
+          if (mText.includes('BELUM')) setMaritalStatus('BELUM KAWIN')
+          else if (mText.includes('CERAI HIDUP')) setMaritalStatus('CERAI HIDUP')
+          else if (mText.includes('CERAI MATI')) setMaritalStatus('CERAI MATI')
+          else if (mText.includes('KAWIN')) setMaritalStatus('KAWIN')
+          else setMaritalStatus(cleanOCRText(mText))
+        }
+
+        const addressBlock = extractedText.match(
+          /Alamat\s*[:\s]*([\s\S]*?)(?=Agama|Perkawinan|Kewarganegaraan)/i,
+        )
+        if (addressBlock) {
+          let addr = addressBlock[1]
+          addr = addr
+            .replace(/RT\/RW|RT\s*RW|RTRW/gi, ' RT/RW ')
+            .replace(/Kel\/Desa|Kel\s*Desa|KelDesa/gi, ' KEL/DESA ')
+            .replace(/Kecamatan/gi, ' KECAMATAN ')
             .replace(/\n/g, ' ')
-            .replace(/RTIRW\s*[:\s]*/gi, 'RT/RW ')
-            .replace(/KELLDESA\s*[:\s—]*/gi, 'KEL/DESA ')
+            .replace(/[^a-zA-Z0-9\s/.,-]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
             .toUpperCase()
-          setAddress(cleanAddress)
+          setAddress(addr)
         }
 
-        const religionMatch = extractedText.match(/Agama\s*[:\s]*([^\n]+)/i)
-        if (religionMatch)
-          setReligion(
-            religionMatch[1]
-              .replace(/[^a-zA-Z]/g, '')
-              .trim()
-              .toUpperCase(),
-          )
+        const jobRaw = extractedText.match(/Pekerjaan\s*[:\s]*([^\n]+)/i)
+        if (jobRaw) setOccupation(cleanOCRText(jobRaw[1]).toUpperCase())
 
-        const maritalMatch = extractedText.match(/Perkawinan\s*[:\s]*([^\n,]+)/i)
-        if (maritalMatch)
-          setMaritalStatus(
-            maritalMatch[1]
-              .replace(/\b[LP]\b.*$/i, '')
-              .replace(/[^a-zA-Z\s]/g, '')
-              .trim()
-              .toUpperCase(),
-          )
-
-        const occupationMatch = extractedText.match(/Pekerjaan\s*[:\s]*([^\n]+)/i)
-        if (occupationMatch) setOccupation(occupationMatch[1].trim().toUpperCase())
-
-        if (extractedText.toUpperCase().includes('WNI')) setNationality('WNI')
-      } else {
-        const npwpMatch = extractedText.match(/\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}/)
+        if (extractedText.match(/WNI|INDONESIA/i)) setNationality('WNI')
+        else if (extractedText.match(/WNA|ASING/i)) setNationality('WNA')
+      } else if (type === 'npwp') {
+        const npwpClean = extractedText.replace(/[^0-9.\-]/g, '')
+        const npwpMatch = npwpClean.match(/\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}/)
         if (npwpMatch) setTaxId(npwpMatch[0])
+        else {
+          const digits = npwpClean.replace(/[^0-9]/g, '')
+          if (digits.length >= 15) {
+            const fmt = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(
+              5,
+              8,
+            )}.${digits.slice(8, 9)}-${digits.slice(9, 12)}.${digits.slice(12, 15)}`
+            setTaxId(fmt)
+          }
+        }
       }
+
       await worker.terminate()
-    } catch (err) {
-      console.error('OCR Error:', err)
+    } catch (error) {
+      console.error('OCR Error:', error)
+      alert('Gagal memindai dokumen. Silakan isi manual.')
     } finally {
       setIsScanning(false)
     }
