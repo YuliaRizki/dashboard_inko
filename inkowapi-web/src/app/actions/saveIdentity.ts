@@ -17,6 +17,13 @@ export async function saveIdentityProtocol(data: any) {
   console.log('PROTOCOL INITIATED for User ID:', userId)
 
   try {
+    // DIAGNOSTIC CHECK
+    const checkUser = await pool.query(`SELECT id FROM "users" WHERE id = $1`, [userId])
+    if (checkUser.rowCount === 0) {
+      console.error(`CRITICAL: User ID ${userId} from session NOT FOUND in 'users' table.`)
+      return { success: false, error: 'User record missing from database. Please re-login.' }
+    }
+
     const query = `
             UPDATE "users" 
             SET 
