@@ -192,18 +192,36 @@ export default function IdentityVerificationPage() {
           else if (mText.includes('KAWIN')) setMaritalStatus('KAWIN')
           else setMaritalStatus(cleanOCRText(maritalRaw[1]))
         }
+        // 6. Address - REWRITTEN to be robust
+        // We capture explicitly, but stop if we hit "RT", "RW", "Darah", "Kelamin", "Kecamatan" to avoid horizontal bleed.
         let fullAddr = ''
-        const alamatStart = extractedText.match(/Alamat[\s:.-]*([^\n]+)/i)
-        if (alamatStart) fullAddr += alamatStart[1] + ' '
 
-        const rtrw = extractedText.match(/(?:RT\/RW|RTRW)[\s:.-]*([^\n]+)/i)
-        if (rtrw) fullAddr += 'RT/RW ' + rtrw[1] + ' '
+        // Helper to grab a field but stop at next potential column headers
+        const grabField = (regex: RegExp) => {
+          const m = extractedText.match(regex)
+          if (!m) return ''
+          // Stop text if we see common side-column keywords
+          return m[1]
+            .split(/RT|RW|Kel|Desa|Kec|Agama|Kawin|Pekerjaan|Gol|Darah|Jenis|Laki|Perempuan/i)[0]
+            .trim()
+        }
 
-        const kel = extractedText.match(/(?:Kel|Desa)[\s:.-]*([^\n]+)/i)
-        if (kel) fullAddr += 'KEL. ' + kel[1] + ' '
+        const al = grabField(/Alamat[\s:.-]*([^\n]+)/i)
+        if (al) fullAddr += al + ' '
 
-        const kec = extractedText.match(/Kecamatan[\s:.-]*([^\n]+)/i)
-        if (kec) fullAddr += 'KEC. ' + kec[1]
+        const rtrwMatch = extractedText.match(/(?:RT\/RW|RTRW)[\s:.-]*([^\n]+)/i)
+        if (rtrwMatch) {
+          // RT RW is usually short, like "001/002"
+          // We take strictly the digits/slashes
+          const nums = rtrwMatch[1].match(/[\d\/]+/)
+          if (nums) fullAddr += 'RT/RW ' + nums[0] + ' '
+        }
+
+        const kel = grabField(/(?:Kel|Desa)[\s:.-]*([^\n]+)/i)
+        if (kel) fullAddr += 'KEL. ' + kel + ' '
+
+        const kec = grabField(/Kecamatan[\s:.-]*([^\n]+)/i)
+        if (kec) fullAddr += 'KEC. ' + kec
 
         if (fullAddr) {
           let clean = fullAddr
