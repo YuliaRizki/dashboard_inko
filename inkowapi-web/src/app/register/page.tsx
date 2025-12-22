@@ -104,6 +104,28 @@ export default function IdentityVerificationPage() {
     return text.toUpperCase()
   }
 
+  /* Robust NIK Finder */
+  const findBestNIK = (text: string) => {
+    // 1. Look for a line explicitly labeled NIK that has ~16 digits
+    const lines = text.split('\n')
+    for (const line of lines) {
+      if (line.match(/NIK|Nomor|NO\./i)) {
+        const cleaned = cleanNIK(line)
+        if (cleaned.length >= 16) return cleaned.substring(0, 16)
+      }
+    }
+    // 2. Deep Search for ANY 16 digits sequence (ignoring non-digits)
+    // This catches NIKs even if headers are missing or text is scrambled.
+    // We look for a block that has 16 digits within a reasonable window.
+    const digitsOnly = text.replace(/[^0-9]/g, '')
+    const potentialNiks = digitsOnly.match(/\d{16}/g)
+
+    // Return the first valid-looking 16 digit number (usually NIK is first large number)
+    if (potentialNiks && potentialNiks.length > 0) return potentialNiks[0]
+
+    return ''
+  }
+
   const handleScan = async (file: File, type: 'ktp' | 'npwp') => {
     const setIsScanning = type === 'ktp' ? setIsScanningKTP : setIsScanningNPWP
     const setPreview = type === 'ktp' ? setKtpPreview : setNpwpPreview
@@ -118,9 +140,7 @@ export default function IdentityVerificationPage() {
       console.log(`DEBUG: Raw ${type.toUpperCase()} Text:`, extractedText)
 
       if (type === 'ktp') {
-        const nikRaw = extractedText.match(/(?:NIK|Nomor)[:\s]*([\s\S]{16,25})(?=\n|Nama)/i)
-        const nikCandidate = nikRaw ? nikRaw[1] : extractedText
-        const finalNik = cleanNIK(nikCandidate)
+        const finalNik = findBestNIK(extractedText)
         if (finalNik) setIdNumber(finalNik)
 
         const nameMatch = extractedText.match(/Nama\s*[:\s]*([^\n]+)/i)
