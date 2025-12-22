@@ -33,7 +33,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Backdrop */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -52,7 +51,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         }`}
       >
         <div className="mb-6 flex flex-col items-center text-center relative">
-          {/* Mobile Close Button */}
           <button
             onClick={onClose}
             className="absolute -right-2 -top-2 p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] md:hidden"

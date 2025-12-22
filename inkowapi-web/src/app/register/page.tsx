@@ -39,8 +39,6 @@ const INDONESIA_REGIONS = {
   Banten: ['Tangerang', 'Tangerang Selatan', 'Serang', 'Cilegon', 'Pandeglang', 'Lebak'],
 }
 
-// Brand Colors
-// Brand Colors - Refactored to use CSS Variables
 const colors = {
   primary: 'var(--ink-green-primary)',
   accent: 'var(--ink-green-accent)',
@@ -79,13 +77,11 @@ export default function IdentityVerificationPage() {
       : []
   }, [selectedProvince])
 
-  // --- HELPER FUNCTIONS FOR OCR IMPROVEMENT ---
   const cleanOCRText = (text: string) => {
     return text.replace(/[:|]/g, ' ').replace(/\s+/g, ' ').trim()
   }
 
   const cleanNIK = (text: string) => {
-    // Attempt to find 16 digits, tolerating common OCR errors (O->0, I->1, etc.)
     const potentialNik = text.replace(/[^0-9OIl]/g, '')
     const cleaned = potentialNik.replace(/[O]/g, '0').replace(/[Il]/g, '1')
     const match = cleaned.match(/\d{16}/)
@@ -169,10 +165,6 @@ export default function IdentityVerificationPage() {
           else if (mText.includes('KAWIN')) setMaritalStatus('KAWIN')
           else setMaritalStatus(cleanOCRText(mText))
         }
-
-        // 6. Address - REWRITTEN to be robust
-        // Capture everything after "Alamat" until we hit "RT/RW", "Kell/Desa", or "Kecamatan" to start,
-        // then append those specific fields.
         let fullAddr = ''
         const alamatStart = extractedText.match(/Alamat[\s:.-]*([^\n]+)/i)
         if (alamatStart) fullAddr += alamatStart[1] + ' '
@@ -258,7 +250,6 @@ export default function IdentityVerificationPage() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      {/* �️ RICH LIGHT ATMOSPHERIC BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
@@ -285,7 +276,6 @@ export default function IdentityVerificationPage() {
         transition={{ duration: 0.5 }}
         className="relative w-full max-w-[1200px] h-screen md:h-[85vh] glass-panel-premium flex flex-col overflow-hidden md:rounded-[32px]"
       >
-        {/* HEADER */}
         <div
           className="p-6 md:p-8 pb-4 shrink-0 z-20"
           style={{
@@ -327,9 +317,7 @@ export default function IdentityVerificationPage() {
           </div>
         </div>
 
-        {/* SCROLLABLE CONTENT */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 pt-2 md:pt-6 custom-scrollbar z-10 pb-24 md:pb-8">
-          {/* UPLOAD ZONES */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* KTP Upload */}
             <motion.div

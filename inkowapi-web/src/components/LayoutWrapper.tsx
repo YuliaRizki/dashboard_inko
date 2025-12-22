@@ -10,7 +10,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   const isAuthPage = pathname === '/login' || pathname === '/auth'
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [pathname])
@@ -23,7 +22,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     <div className="flex h-screen w-full relative">
       <Sidebar isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileMenuOpen(true)}
         className="fixed top-4 left-4 z-40 p-2 glass-panel-premium rounded-xl text-[var(--text-primary)] md:hidden"

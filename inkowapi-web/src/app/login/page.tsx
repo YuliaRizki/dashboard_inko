@@ -18,8 +18,6 @@ export default function LoginPage() {
   const [isEmailSent, setIsEmailSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Color schemes for mode distinction
-  // Color schemes for mode distinction - Refactored to use CSS Variables
   const loginColors = {
     accent: 'var(--ink-login-accent)',
     accentLight: 'var(--ink-accent-light-login)',
@@ -142,9 +140,7 @@ export default function LoginPage() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center p-10 relative overflow-hidden">
-      {/* 🌤️ RICH LIGHT ATMOSPHERIC BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Dynamic gradient orbs - shift color based on mode */}
         <motion.div
           animate={{
             x: [0, 40, 0],
@@ -174,7 +170,6 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Subtle grid pattern */}
         <div
           className="absolute inset-0"
           style={{
@@ -197,7 +192,6 @@ export default function LoginPage() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="relative w-full max-w-[1100px] min-h-[600px] md:h-[650px] flex flex-col md:flex-row overflow-hidden z-10 glass-panel-premium rounded-3xl"
         >
-          {/* 🎨 SLIDING ACCENT PANEL (Desktop Only) */}
           <motion.div
             animate={{ x: isLoginView ? (BOX_WIDTH - PANEL_WIDTH) * -1 : 0 }}
             transition={syncSpring}
@@ -211,7 +205,6 @@ export default function LoginPage() {
               }`,
             }}
           >
-            {/* Animated glow */}
             <motion.div
               animate={{ opacity: [0.4, 0.7, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -222,7 +215,6 @@ export default function LoginPage() {
             />
 
             <div className="relative z-10">
-              {/* Icon with glow */}
               <motion.div
                 animate={{
                   boxShadow: [
@@ -268,8 +260,6 @@ export default function LoginPage() {
               </p>
             </div>
           </motion.div>
-
-          {/* 📱 MOBILE HEADER (Visible only on mobile) */}
           <div className="md:hidden flex flex-col items-center justify-center p-8 pb-0 text-center z-20">
             <motion.div
               className="mb-4 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto backdrop-blur-xl"
@@ -297,9 +287,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          {/* 📝 FORM AREA */}
           <div className="relative flex-1 flex flex-col items-center justify-center md:block h-full bg-white/30 backdrop-blur-sm md:bg-transparent">
-            {/* REGISTER FORM */}
             <div
               className={`w-full h-full flex items-center justify-center p-6 md:p-20 transition-opacity duration-300 md:absolute md:left-0 md:top-0 md:w-[650px] ${
                 isLoginView
@@ -473,7 +461,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* 🔄 FUTURISTIC MODE SWITCHER (Desktop Only) */}
           <motion.button
             animate={{
               x: isLoginView ? -200 : 0,
