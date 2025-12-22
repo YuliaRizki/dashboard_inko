@@ -1,12 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
-import {
-  Activity,
-  CreditCard,
-  DollarSign,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+'use client'
+import { motion } from 'framer-motion'
+import { Activity, CreditCard, Banknote, TrendingUp, Users } from 'lucide-react'
 
 const container = {
   hidden: { opacity: 0 },
@@ -16,12 +10,12 @@ const container = {
       staggerChildren: 0.1,
     },
   },
-};
+}
 
 const item = {
   hidden: { y: 20, opacity: 0 },
   show: { y: 0, opacity: 1 },
-};
+}
 
 export default function DashboardPage() {
   return (
@@ -31,11 +25,11 @@ export default function DashboardPage() {
           <h1
             className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
             style={{
-              backgroundImage: "var(--ink-gradient-emerald)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              display: "inline-block",
-              fontFamily: "var(--font-montserrat)",
+              backgroundImage: 'var(--ink-gradient-emerald)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              display: 'inline-block',
+              fontFamily: 'var(--font-montserrat)',
             }}
           >
             Overview
@@ -52,11 +46,11 @@ export default function DashboardPage() {
         <h1
           className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
           style={{
-            backgroundImage: "var(--ink-gradient-emerald)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            display: "inline-block",
-            fontFamily: "var(--font-montserrat)",
+            backgroundImage: 'var(--ink-gradient-emerald)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            display: 'inline-block',
+            fontFamily: 'var(--font-montserrat)',
           }}
         >
           Overview
@@ -75,27 +69,27 @@ export default function DashboardPage() {
       >
         {[
           {
-            title: "Total Revenue",
-            value: "Rp 705.617.484",
-            change: "+20.1%",
-            icon: DollarSign,
+            title: 'Total Revenue',
+            value: 'Rp 705.617.484',
+            change: '+20.1%',
+            icon: Banknote,
           },
           {
-            title: "Active Users",
-            value: "2,350",
-            change: "+15.2%",
+            title: 'Active Users',
+            value: '2,350',
+            change: '+15.2%',
             icon: Users,
           },
           {
-            title: "Transactions",
-            value: "12,234",
-            change: "+12.5%",
+            title: 'Transactions',
+            value: '12,234',
+            change: '+12.5%',
             icon: CreditCard,
           },
           {
-            title: "Growth Rate",
-            value: "24.5%",
-            change: "+4.3%",
+            title: 'Growth Rate',
+            value: '24.5%',
+            change: '+4.3%',
             icon: TrendingUp,
           },
         ].map((stat, i) => (
@@ -164,21 +158,15 @@ export default function DashboardPage() {
                   JD
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-[var(--text-primary)]">
-                    John Doe
-                  </p>
-                  <p className="text-xs text-[var(--text-muted)]">
-                    Outgoing Transfer
-                  </p>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">John Doe</p>
+                  <p className="text-xs text-[var(--text-muted)]">Outgoing Transfer</p>
                 </div>
-                <p className="text-sm font-semibold text-[var(--text-primary)]">
-                  -Rp 19.500.000
-                </p>
+                <p className="text-sm font-semibold text-[var(--text-primary)]">-Rp 19.500.000</p>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
     </div>
-  );
+  )
 }
