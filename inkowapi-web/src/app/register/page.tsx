@@ -97,7 +97,7 @@ export default function IdentityVerificationPage() {
         return valid
       }
     }
-    if (upper.includes('SLAM')) return 'ISLAM'
+    if (upper.includes('SLAM') || upper === 'SEM' || upper.includes('MOSLEM')) return 'ISLAM'
     if (upper.includes('RISTEN')) return 'KRISTEN'
     if (upper.includes('ATOLIK')) return 'KATOLIK'
     if (upper.includes('KAWIN')) return 'KAWIN'
@@ -156,14 +156,21 @@ export default function IdentityVerificationPage() {
           setReligion(matchedRel)
         }
 
-        const maritalRaw = extractedText.match(/Perkawinan\s*[:\s]*([^\n]+)/i)
+        // 5. Marital Status - improved for collapsed text
+        const maritalRaw = extractedText.match(/Perkawinan[\s:.-]*([^\n]+)/i)
         if (maritalRaw) {
-          const mText = maritalRaw[1].toUpperCase()
-          if (mText.includes('BELUM')) setMaritalStatus('BELUM KAWIN')
-          else if (mText.includes('CERAI HIDUP')) setMaritalStatus('CERAI HIDUP')
-          else if (mText.includes('CERAI MATI')) setMaritalStatus('CERAI MATI')
+          const mText = maritalRaw[1].toUpperCase().replace(/\s/g, '') // Remove all spaces for checking
+
+          if (
+            mText.includes('BELUMKAWIN') ||
+            mText.includes('BELUM') ||
+            extractedText.toUpperCase().includes('BELUM KAWIN')
+          ) {
+            setMaritalStatus('BELUM KAWIN')
+          } else if (mText.includes('CERAIHIDUP')) setMaritalStatus('CERAI HIDUP')
+          else if (mText.includes('CERAIMATI')) setMaritalStatus('CERAI MATI')
           else if (mText.includes('KAWIN')) setMaritalStatus('KAWIN')
-          else setMaritalStatus(cleanOCRText(mText))
+          else setMaritalStatus(cleanOCRText(maritalRaw[1]))
         }
         let fullAddr = ''
         const alamatStart = extractedText.match(/Alamat[\s:.-]*([^\n]+)/i)
