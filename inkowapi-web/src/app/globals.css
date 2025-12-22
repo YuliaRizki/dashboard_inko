@@ -40,6 +40,34 @@
   --accent-cyan: var(--ink-register-accent);
   --glass-border: var(--ink-glass-border);
   --ink-bg-fog: rgba(241, 249, 245, 0.8);
+
+  /* 🌈 Dynamic Gradients */
+  --ink-gradient-primary: linear-gradient(135deg, #1f8f4a, #27b36a);
+  --ink-gradient-emerald: linear-gradient(135deg, #34d399 0%, #047857 100%);
+  --ink-gradient-login: linear-gradient(
+    135deg,
+    #1f8f4a 0%,
+    #27b36a 50%,
+    #4ae89a 100%
+  );
+  --ink-gradient-register: linear-gradient(
+    135deg,
+    #0891b2 0%,
+    #06b6d4 50%,
+    #22d3ee 100%
+  );
+
+  /* 💡 Component Specifics */
+  --ink-accent-light-login: #27b36a;
+  --ink-accent-light-register: #22d3ee;
+  --ink-bg-tint-login: rgba(31, 143, 74, 0.04);
+  --ink-bg-tint-register: rgba(8, 145, 178, 0.04);
+
+  /* 💧 Transparent Variants */
+  --ink-login-accent-15: rgba(31, 143, 74, 0.15);
+  --ink-login-accent-20: rgba(31, 143, 74, 0.2);
+  --ink-register-accent-15: rgba(8, 145, 178, 0.15);
+  --ink-register-accent-20: rgba(8, 145, 178, 0.2);
 }
 
 body {

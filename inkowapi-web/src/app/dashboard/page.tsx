@@ -31,8 +31,7 @@ export default function DashboardPage() {
           <h1
             className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
             style={{
-              backgroundImage:
-                "linear-gradient(135deg, #34D399 0%, #047857 100%)",
+              backgroundImage: "var(--ink-gradient-emerald)",
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               display: "inline-block",
@@ -53,7 +52,7 @@ export default function DashboardPage() {
         <h1
           className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
           style={{
-            backgroundImage: "linear-gradient(135deg, #1F8F4A, #27B36A)",
+            backgroundImage: "var(--ink-gradient-emerald)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
             display: "inline-block",

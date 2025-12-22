@@ -27,20 +27,25 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Color schemes for mode distinction
+  // Color schemes for mode distinction - Refactored to use CSS Variables
   const loginColors = {
-    accent: "#1F8F4A",
-    accentLight: "#27B36A",
-    glow: "rgba(31, 143, 74, 0.25)",
-    gradient: "linear-gradient(135deg, #1F8F4A 0%, #27B36A 50%, #4AE89A 100%)",
-    bgTint: "rgba(31, 143, 74, 0.04)",
+    accent: "var(--ink-login-accent)",
+    accentLight: "var(--ink-accent-light-login)",
+    glow: "var(--ink-login-glow)",
+    gradient: "var(--ink-gradient-login)",
+    bgTint: "var(--ink-bg-tint-login)",
+    borderLow: "var(--ink-login-accent-15)",
+    borderHigh: "var(--ink-login-accent-20)",
   };
 
   const registerColors = {
-    accent: "#0891B2",
-    accentLight: "#22D3EE",
-    glow: "rgba(8, 145, 178, 0.25)",
-    gradient: "linear-gradient(135deg, #0891B2 0%, #06B6D4 50%, #22D3EE 100%)",
-    bgTint: "rgba(8, 145, 178, 0.04)",
+    accent: "var(--ink-register-accent)",
+    accentLight: "var(--ink-accent-light-register)",
+    glow: "var(--ink-register-glow)",
+    gradient: "var(--ink-gradient-register)",
+    bgTint: "var(--ink-bg-tint-register)",
+    borderLow: "var(--ink-register-accent-15)",
+    borderHigh: "var(--ink-register-accent-20)",
   };
 
   const activeColors = isLoginView ? loginColors : registerColors;
@@ -249,7 +254,7 @@ export default function LoginPage() {
                 className="mb-8 w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto backdrop-blur-xl"
                 style={{
                   backgroundImage: `linear-gradient(145deg, ${activeColors.glow}, rgba(255, 255, 255, 0.8))`,
-                  border: `2px solid ${activeColors.accent}30`,
+                  border: `2px solid ${activeColors.borderHigh}`,
                 }}
               >
                 {isLoginView ? (
@@ -317,7 +322,7 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Name"
                     className="input-premium w-full text-xs font-bold tracking-widest"
-                    style={{ borderColor: `${registerColors.accent}25` }}
+                    style={{ borderColor: registerColors.borderLow }}
                     value={regName}
                     onChange={(e) => setRegName(e.target.value)}
                   />
@@ -325,7 +330,7 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Email"
                     className="input-premium w-full text-xs font-bold tracking-widest"
-                    style={{ borderColor: `${registerColors.accent}25` }}
+                    style={{ borderColor: registerColors.borderLow }}
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                   />
@@ -334,7 +339,7 @@ export default function LoginPage() {
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       className="input-premium w-full pr-12 text-xs font-bold tracking-widest"
-                      style={{ borderColor: `${registerColors.accent}25` }}
+                      style={{ borderColor: registerColors.borderLow }}
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
                     />
@@ -416,7 +421,7 @@ export default function LoginPage() {
                     Welcome Back
                   </h2>
                   <p className="text-[#7A9990] text-xs uppercase tracking-widest">
-                    Enter Email and Password to Continue 
+                    Enter Email and Password to Continue
                   </p>
                 </div>
                 <div className="space-y-4">
@@ -424,7 +429,7 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Email"
                     className="input-premium w-full text-xs font-bold tracking-widest"
-                    style={{ borderColor: `${loginColors.accent}25` }}
+                    style={{ borderColor: loginColors.borderLow }}
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                   />
@@ -432,7 +437,7 @@ export default function LoginPage() {
                     type="password"
                     placeholder="Password"
                     className="input-premium w-full text-xs font-bold tracking-widest"
-                    style={{ borderColor: `${loginColors.accent}25` }}
+                    style={{ borderColor: loginColors.borderLow }}
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                   />

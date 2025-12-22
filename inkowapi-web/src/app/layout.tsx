@@ -1,35 +1,33 @@
-import LayoutWrapper from "@/components/LayoutWrapper";
-import "./globals.css";
-import type { Metadata } from "next";
-import { Montserrat, Open_Sans } from "next/font/google";
+import type { Metadata } from 'next'
+import { Open_Sans, Montserrat } from 'next/font/google'
+import './globals.css'
+import LayoutWrapper from '@/components/LayoutWrapper'
 
 const openSans = Open_Sans({
-  subsets: ["latin"],
-  variable: "--font-open-sans",
-});
+  variable: '--font-open-sans',
+  subsets: ['latin'],
+})
 
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-});
+  variable: '--font-montserrat',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
-  title: "InkoWapi Dashboard",
-  description: "Financial Control Center",
-};
+  title: 'InkoWapi',
+  description: 'InkoWapi Dashboard Application',
+}
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <html lang="en">
-      <body
-        className={`${openSans.variable} ${montserrat.variable} antialiased overflow-hidden bg-[var(--bg-main)] text-[var(--text-primary)] font-sans`}
-      >
+      <body className={`${openSans.variable} ${montserrat.variable} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
-  );
+  )
 }

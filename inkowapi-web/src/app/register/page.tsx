@@ -47,13 +47,14 @@ const INDONESIA_REGIONS = {
 };
 
 // Brand Colors
+// Brand Colors - Refactored to use CSS Variables
 const colors = {
-  primary: "#1F8F4A",
-  accent: "#27B36A",
-  mint: "#7FFFC7",
-  deep: "#0B3D2E",
-  cyan: "#0891B2",
-  cyanLight: "#22D3EE",
+  primary: "var(--ink-green-primary)",
+  accent: "var(--ink-green-accent)",
+  mint: "var(--ink-green-mint)",
+  deep: "var(--ink-green-deep)",
+  cyan: "var(--ink-register-accent)",
+  cyanLight: "var(--ink-accent-light-register)",
 };
 
 export default function IdentityVerificationPage() {
@@ -253,8 +254,7 @@ export default function IdentityVerificationPage() {
                 <h2
                   className="text-3xl font-black uppercase tracking-wide py-1 bg-clip-text text-transparent"
                   style={{
-                    backgroundImage:
-                      "linear-gradient(135deg, #34D399 0%, #047857 100%)",
+                    backgroundImage: "var(--ink-gradient-emerald)",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     display: "inline-block",
@@ -659,7 +659,7 @@ export default function IdentityVerificationPage() {
             <h2
               className="text-5xl font-black uppercase tracking-tighter pr-4 py-2 bg-clip-text text-transparent"
               style={{
-                backgroundImage: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+                backgroundImage: "var(--ink-gradient-primary)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 display: "inline-block",
