@@ -3,6 +3,7 @@ import { pool } from './db'
 
 export const auth = betterAuth({
   database: pool,
+  baseURL: process.env.BETTER_AUTH_URL || 'https://inkowapi-web.vercel.app',
   trustedOrigins: [
     'http://localhost:3000',
     'http://localhost:3001',
