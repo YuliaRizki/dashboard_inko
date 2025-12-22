@@ -230,6 +230,10 @@ export default function IdentityVerificationPage() {
             background: 'linear-gradient(180deg, rgba(31, 143, 74, 0.06) 0%, transparent 100%)',
           }}
         >
+          {/* Version Indicator for Debugging */}
+          <div className="absolute top-2 right-4 text-[9px] text-gray-400 opacity-50">
+            System v1.5
+          </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-4">
             <div className="flex items-center gap-4">
               <div>
